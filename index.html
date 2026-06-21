@@ -82,6 +82,12 @@
 
   <div id="intro" class="card">
     <p style="font-size:14.5px; color:#555;">На основе 20 лет опыта в продажах и работы РОПом. Отвечаешь на вопросы по 6 блокам воронки — система автоматически считает балл и показывает зону риска твоего бизнеса.</p>
+    <button class="start-btn" id="payBtn">Оплатить и начать аудит — 1490 ₽</button>
+    <p id="payStatus" style="font-size:13px; color:#999; text-align:center; margin-top:10px;"></p>
+  </div>
+
+  <div id="paidIntro" class="card" style="display:none;">
+    <p style="font-size:14.5px; color:#2a7a34; font-weight:600;">✓ Оплата прошла успешно</p>
     <button class="start-btn" id="startBtn">Начать аудит →</button>
   </div>
 
@@ -151,10 +157,63 @@ function zone(pct) {
 }
 
 document.getElementById('startBtn').onclick = () => {
-  document.getElementById('intro').style.display = 'none';
+  document.getElementById('paidIntro').style.display = 'none';
   document.getElementById('quiz').style.display = 'block';
   render();
 };
+
+document.getElementById('payBtn').onclick = async () => {
+  const btn = document.getElementById('payBtn');
+  const status = document.getElementById('payStatus');
+  btn.disabled = true;
+  btn.textContent = 'Создаём платёж...';
+  status.textContent = '';
+
+  try {
+    const res = await fetch('/create-payment', { method: 'POST' });
+    const data = await res.json();
+
+    if (data.confirmation_url) {
+      // Сохраняем payment_id, чтобы проверить его после возврата с оплаты
+      localStorage.setItem('audit_payment_id', data.payment_id);
+      window.location.href = data.confirmation_url;
+    } else {
+      status.textContent = 'Не удалось создать платёж. Попробуй ещё раз.';
+      btn.disabled = false;
+      btn.textContent = 'Оплатить и начать аудит — 1490 ₽';
+    }
+  } catch (e) {
+    status.textContent = 'Ошибка соединения. Попробуй ещё раз.';
+    btn.disabled = false;
+    btn.textContent = 'Оплатить и начать аудит — 1490 ₽';
+  }
+};
+
+// При загрузке страницы проверяем, не вернулся ли человек после оплаты
+async function checkPaymentOnLoad() {
+  const paymentId = localStorage.getItem('audit_payment_id');
+  if (!paymentId) return;
+
+  const status = document.getElementById('payStatus');
+  status.textContent = 'Проверяем оплату...';
+
+  try {
+    const res = await fetch('/check-payment?payment_id=' + encodeURIComponent(paymentId));
+    const data = await res.json();
+
+    if (data.paid) {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('paidIntro').style.display = 'block';
+      status.textContent = '';
+    } else {
+      status.textContent = 'Оплата пока не подтверждена. Если ты уже оплатил — подожди минуту и обнови страницу.';
+    }
+  } catch (e) {
+    status.textContent = '';
+  }
+}
+
+checkPaymentOnLoad();
 
 function render() {
   const quiz = document.getElementById('quiz');
