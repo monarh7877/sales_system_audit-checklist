@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аудит воронки продаж — узнай, где теряешь деньги</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #f7f6f3;
+    color: #1a1a1a;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 32px 20px 80px; }
+  .hero { text-align: center; margin-bottom: 32px; }
+  .hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
+  .hero p { font-size: 15px; color: #555; max-width: 480px; margin: 0 auto; }
+  .price-badge {
+    display: inline-block; margin-top: 16px; background: #fff3da;
+    color: #6b4a0a; font-weight: 600; font-size: 14px;
+    padding: 6px 16px; border-radius: 20px;
+  }
+  .card {
+    background: #fff; border-radius: 16px; padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 16px;
+  }
+  .start-btn {
+    display: block; width: 100%; background: #1a1a1a; color: #fff;
+    border: none; padding: 16px; font-size: 16px; font-weight: 600;
+    border-radius: 12px; cursor: pointer; margin-top: 8px;
+  }
+  .start-btn:hover { background: #333; }
+  .progress-wrap { position: sticky; top: 0; background: #f7f6f3; padding: 12px 0; z-index: 10; }
+  .progress-text { display: flex; justify-content: space-between; font-size: 13px; color: #777; margin-bottom: 6px; }
+  .progress-bar { height: 8px; background: #e5e3dc; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #1a1a1a; transition: width 0.2s; }
+  .block-title { display: flex; align-items: center; gap: 8px; margin: 28px 0 12px; font-size: 17px; font-weight: 700; }
+  .block-num {
+    width: 26px; height: 26px; border-radius: 50%; background: #1a1a1a; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
+  }
+  .item-row {
+    display: flex; flex-direction: column; gap: 10px; padding: 14px 0;
+    border-bottom: 1px solid #ececec;
+  }
+  .item-text { font-size: 14.5px; }
+  .opts { display: flex; gap: 6px; }
+  .opt-btn {
+    flex: 1; font-size: 13px; padding: 8px 6px; border-radius: 8px;
+    border: 1px solid #ddd; background: #fff; color: #777; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt-btn.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+  .result-card {
+    text-align: center; padding: 32px 24px; border-radius: 16px; margin-top: 24px;
+  }
+  .result-card.red { background: #fdecec; }
+  .result-card.amber { background: #fff3da; }
+  .result-card.green { background: #e9f5ea; }
+  .result-pct { font-size: 44px; font-weight: 700; margin: 8px 0; }
+  .result-label { font-size: 18px; font-weight: 700; padding: 6px 16px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  .result-label.red { background: #f5c1c1; color: #7a1f1f; }
+  .result-label.amber { background: #facb6e; color: #5a3c08; }
+  .result-label.green { background: #a8d8ad; color: #1f4d24; }
+  .result-sub { font-size: 14.5px; color: #444; max-width: 420px; margin: 0 auto 20px; }
+  .cta-btn {
+    display: inline-block; background: #1a1a1a; color: #fff; padding: 14px 28px;
+    border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; border: none; cursor: pointer;
+  }
+  footer { text-align: center; font-size: 12px; color: #999; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <h1>Где твой бизнес теряет деньги в продажах?</h1>
+    <p>34 контрольные точки по всей воронке. 10 минут — и ты увидишь, в какой зоне находится твой отдел продаж.</p>
+    <div class="price-badge">1490 ₽ за полную диагностику</div>
+  </div>
+
+  <div id="intro" class="card">
+    <p style="font-size:14.5px; color:#555;">На основе 20 лет опыта в продажах и работы РОПом. Отвечаешь на вопросы по 6 блокам воронки — система автоматически считает балл и показывает зону риска твоего бизнеса.</p>
+    <p style="font-size:13px; color:#777; margin-bottom:6px;">Email или телефон — нужен для отправки электронного чека (по закону РФ)</p>
+    <input type="email" id="customerEmail" placeholder="Email" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; font-size:14px; margin-bottom:8px; box-sizing:border-box;">
+    <input type="tel" id="customerPhone" placeholder="Телефон (необязательно, если указан email)" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ddd; font-size:14px; margin-bottom:14px; box-sizing:border-box;">
+    <button class="start-btn" id="payBtn">Оплатить и начать аудит — 1490 ₽</button>
+    <p id="payStatus" style="font-size:13px; color:#999; text-align:center; margin-top:10px;"></p>
+  </div>
+
+  <div id="paidIntro" class="card" style="display:none;">
+    <p style="font-size:14.5px; color:#2a7a34; font-weight:600;">✓ Оплата прошла успешно</p>
+    <button class="start-btn" id="startBtn">Начать аудит →</button>
+  </div>
+
+  <div id="quiz" style="display:none;"></div>
+
+</div>
+
+<script>
+const BLOCKS = [
+  { name: 'Лидген', items: [
+    'Фиксируются все источники входящих заявок',
+    'Заявки обрабатываются не дольше 15 минут',
+    'Ни одна заявка не теряется без ответа',
+    'Менеджеры знают норму заявок в день/неделю',
+    'Понятно, какой канал даёт больше реальных продаж'
+  ]},
+  { name: 'Квалификация', items: [
+    'Менеджер чётко выясняет, "клиент" это или нет',
+    'Есть прописанные критерии целевого клиента',
+    'Не тратится время на заведомо не своих клиентов',
+    'Бюджет и потребность выясняются на первом контакте',
+    'Есть скрипт квалификации, а не "на ощущениях"',
+    'Отказники фиксируются с причиной отказа'
+  ]},
+  { name: 'Презентация', items: [
+    'Менеджер говорит на языке выгод, а не характеристик',
+    'Есть готовая структура презентации',
+    'Презентация адаптируется под тип клиента',
+    'Используются кейсы и цифры как доказательства',
+    'Цена называется уверенно, без извинений',
+    'Есть чёткое предложение следующего шага'
+  ]},
+  { name: 'Возражения', items: [
+    'Прописаны ответы на 5-7 частых возражений',
+    'Менеджеры не "сливаются" при первом "дорого"',
+    'Возражения фиксируются и анализируются',
+    'Менеджер отличает реальное возражение от отговорки',
+    'Есть отработка "нужно посоветоваться"',
+    'После отработки сделка двигается вперёд'
+  ]},
+  { name: 'Закрытие', items: [
+    'В разговоре есть чёткий призыв к действию',
+    'Менеджер сам предлагает оплату/договор',
+    'Есть дедлайны, ускоряющие решение клиента',
+    'Сделки не зависают неделями без движения',
+    'Виден этап, где теряется больше всего сделок',
+    'Есть регламент по числу касаний до закрытия'
+  ]},
+  { name: 'После продажи', items: [
+    'Есть система работы с базой после продажи',
+    'Менеджеры предлагают повторные продажи',
+    'Собирается обратная связь после сделки',
+    'Ведётся учёт % повторных покупок',
+    'Есть план реактивации "уснувших" клиентов'
+  ]}
+];
+
+let answers = {};
+
+function totalItems() { return BLOCKS.reduce((s,b)=>s+b.items.length,0); }
+function maxScore() { return totalItems() * 2; }
+
+function zone(pct) {
+  if (pct < 50) return { key: 'red', label: 'Зона риска', sub: 'Вы теряете 30%+ потенциальной прибыли прямо сейчас. Большинство дыр в системе можно закрыть за один разбор воронки.' };
+  if (pct < 80) return { key: 'amber', label: 'Зона роста', sub: 'Система частично работает, но есть конкретные дыры, которые тормозят рост выручки.' };
+  return { key: 'green', label: 'Зона устойчивости', sub: 'Основа крепкая. Дальше — тонкая настройка и масштабирование того, что уже работает.' };
+}
+
+document.getElementById('startBtn').onclick = () => {
+  document.getElementById('paidIntro').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  render();
+};
+
+document.getElementById('payBtn').onclick = async () => {
+  const btn = document.getElementById('payBtn');
+  const status = document.getElementById('payStatus');
+  const email = document.getElementById('customerEmail').value.trim();
+  const phone = document.getElementById('customerPhone').value.trim();
+
+  if (!email && !phone) {
+    status.textContent = 'Укажи email или телефон — нужен для электронного чека.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Создаём платёж...';
+  status.textContent = '';
+
+  try {
+    const res = await fetch('/create-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, phone }),
+    });
+    const data = await res.json();
+
+    if (data.confirmation_url) {
+      // Сохраняем payment_id, чтобы проверить его после возврата с оплаты
+      localStorage.setItem('audit_payment_id', data.payment_id);
+      window.location.href = data.confirmation_url;
+    } else {
+      status.textContent = data.error || 'Не удалось создать платёж. Попробуй ещё раз.';
+      btn.disabled = false;
+      btn.textContent = 'Оплатить и начать аудит — 1490 ₽';
+    }
+  } catch (e) {
+    status.textContent = 'Ошибка соединения. Попробуй ещё раз.';
+    btn.disabled = false;
+    btn.textContent = 'Оплатить и начать аудит — 1490 ₽';
+  }
+};
+
+// При загрузке страницы проверяем, не вернулся ли человек после оплаты
+async function checkPaymentOnLoad() {
+  const paymentId = localStorage.getItem('audit_payment_id');
+  if (!paymentId) return;
+
+  const status = document.getElementById('payStatus');
+  status.textContent = 'Проверяем оплату...';
+
+  try {
+    const res = await fetch('/check-payment?payment_id=' + encodeURIComponent(paymentId));
+    const data = await res.json();
+
+    if (data.paid) {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('paidIntro').style.display = 'block';
+      status.textContent = '';
+    } else {
+      status.textContent = 'Оплата пока не подтверждена. Если ты уже оплатил — подожди минуту и обнови страницу.';
+    }
+  } catch (e) {
+    status.textContent = '';
+  }
+}
+
+checkPaymentOnLoad();
+
+function render() {
+  const quiz = document.getElementById('quiz');
+  const total = totalItems();
+  const done = Object.keys(answers).length;
+  const pct = Math.round((done/total)*100);
+
+  let html = `<div class="progress-wrap">
+    <div class="progress-text"><span>Заполнено ${done} из ${total}</span><span>${pct}%</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  </div>`;
+
+  BLOCKS.forEach((block, bi) => {
+    html += `<div class="block-title"><span class="block-num">${bi+1}</span>${block.name}</div>`;
+    block.items.forEach((text, i) => {
+      const key = bi + '-' + i;
+      const val = answers[key];
+      html += `<div class="item-row">
+        <div class="item-text">${text}</div>
+        <div class="opts">
+          ${[['Нет',0],['Отчасти',1],['Да',2]].map(([label,v]) => `
+            <button class="opt-btn ${val===v ? 'active' : ''}" data-key="${key}" data-val="${v}">${label}</button>
+          `).join('')}
+        </div>
+      </div>`;
+    });
+  });
+
+  if (done === total) {
+    const s = Object.values(answers).reduce((a,b)=>a+b,0);
+    const finalPct = Math.round((s/maxScore())*100);
+    const z = zone(finalPct);
+    const botLink = `https://t.me/sales_system_audit_bot?start=zona-${z.key}_pct-${finalPct}`;
+    html += `<div class="result-card ${z.key}">
+      <p style="font-size:13px; color:#666;">Итоговый результат</p>
+      <div class="result-pct">${finalPct}%</div>
+      <div class="result-label ${z.key}">${z.label}</div>
+      <p class="result-sub">${z.sub}</p>
+      <a class="cta-btn" href="${botLink}" target="_blank">Записаться на разбор воронки →</a>
+    </div>`;
+  }
+
+  quiz.innerHTML = html;
+  quiz.querySelectorAll('button[data-key]').forEach(btn => {
+    btn.onclick = () => {
+      answers[btn.dataset.key] = parseInt(btn.dataset.val);
+      render();
+    };
+  });
+}
+</script>
+
+<footer>Аудит воронки продаж · на основе 20 лет опыта в продажах и работы РОПом</footer>
+</body>
+</html>
